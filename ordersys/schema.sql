@@ -1,0 +1,27 @@
+DROP TABLE IF EXISTS project;
+DROP TABLE IF EXISTS eorder;
+DROP TABLE IF EXISTS item;
+
+CREATE TABLE project (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+
+CREATE TABLE eorder (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    project_id INTEGER NOT NULL,
+    vendor TEXT NOT NULL,
+    created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (project_id) REFERENCES project (id)
+);
+
+CREATE TABLE item (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER NOT NULL,
+    description TEXT NOT NULL,
+    item_number TEXT NOT NULL,
+    price INTEGER NOT NULL,
+    quantity INTEGER NOT NULL,
+    justification TEXT NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES eorder (id)
+);
