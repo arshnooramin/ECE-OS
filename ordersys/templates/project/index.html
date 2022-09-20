@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <h3>{% block title %}Project: {{ project["name"] }}{% endblock %}</h3>
+    <a href=#>Create a New Order</a>
+{% endblock %}
+
+{% block content %}
+    {% for order in orders %}
+        <h3>{{ order["id"] }}: {{ order["vendor"] }}</h3>
+        {% if not loop.last %}
+            <hr>
+        {% endif %}
+    {% endfor %}
+{% endblock %}

@@ -1,6 +1,6 @@
 import os
-from flask import Flask
-from . import db
+from flask import Flask, render_template
+from . import db, auth, project
 
 def create_app(test_config=None):
     # create and configure the app
@@ -24,5 +24,7 @@ def create_app(test_config=None):
         pass
 
     db.init_app(app)
+    app.register_blueprint(auth.bp)
+    app.register_blueprint(project.bp)
 
     return app
