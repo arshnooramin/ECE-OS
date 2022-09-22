@@ -1,15 +1,25 @@
 <!doctype html>
-<title>{% block title %}{% endblock %} | ECE Ordering System</title>
-<!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"> -->
-<nav>
-    <h1>ECE Ordering System</h1>
-</nav>
-<section class="content">
-    <header>
-        {% block header %}{% endblock %}
-    </header>
-    {% block content %}{% endblock %}
-    {% for message in get_flashed_messages() %}
-        <div class="flash">{{ message }}</div>
-    {% endfor %}
-</section>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>ECE Ordering System | {% block title %}{% endblock %}</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" crossorigin="anonymous">
+    </head>
+    <body>
+        <nav class="navbar bg-light">
+            <div class="container">
+            <span class="navbar-brand mb-0 h1">ECE Ordering System</span>
+            </div>
+        </nav>
+        <div class="container mt-4">
+            {% block content %}{% endblock %}
+            {% for message in get_flashed_messages() %}
+                <div class="row mt-4">
+                    <div class="align-middle col-md-6 alert alert-danger flash" role="alert">{{ message }}</div>
+                </div>
+            {% endfor %}
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
+    </body>
+</html>

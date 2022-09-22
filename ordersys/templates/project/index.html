@@ -7,9 +7,26 @@
 
 {% block content %}
     {% for order in orders %}
-        <h3>{{ order["id"] }}: {{ order["vendor"] }}</h3>
-        {% if not loop.last %}
+        <div class="card mt-3" style="width: 25rem;">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h5 class="card-title">{{ order["id"] }}: {{ order["vendor"] }}</h5>
+                        <p>$300</p>
+                        <span class="badge rounded-pill text-bg-secondary">Pending</span>
+                    </div>
+                    <div class="col-sm-4">
+                        <a href="#" class="w-100 btn btn-primary">View</a>
+                        <a href="#" class="w-100 mt-2 btn btn-primary">Track</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                Added 09/18/2022
+            </div>
+        </div>
+        <!-- {% if not loop.last %}
             <hr>
-        {% endif %}
+        {% endif %} -->
     {% endfor %}
 {% endblock %}
