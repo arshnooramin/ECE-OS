@@ -16,8 +16,8 @@
                 <p>${{ project["total"] }}</p>
             </div>
             <div class="col-sm-4">
-                <a class="w-100 btn btn-primary">View</a>
-                <a class="w-100 mt-2 btn btn-danger" href="{{ url_for('admin.delete_project', project_id = project['project_id']) }}">Delete</a>
+                <a class="w-100 btn btn-primary" href="{{ url_for('project.index_admin', project_id = project['project_id']) }}">View</a>
+                <a class="w-100 mt-2 btn btn-danger" href="{{ url_for('project.delete_project', project_id = project['project_id']) }}">Delete</a>
             </div>
         </div>
     </div>

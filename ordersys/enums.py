@@ -23,4 +23,16 @@ status_enum = {
     5: "Canceled"
 }
 
+order_speed_enum = {
+    0: "Standard Ground",
+    1: "3-Day",
+    2: "2-Day",
+    3: "Overnight"
+}
+
+order_date_enum = {
+    0: "End of Week",
+    1: "Immediate"
+}
+
 

@@ -1,25 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h3 class="mb-4">{% block title %}Project: {{ project["name"] }}{% endblock %}</h3>
-<a class="btn btn-primary" href="{{ url_for('order.new_order') }}">Create a New Order</a>
+<h3 class="mb-3">{% block title %}Project: {{ project["name"] }}{% endblock %}</h3>
+<h5 class="mb-4">Total Cost: ${{ project["total"] }}</h5>
+{% if not current_user.is_admin() %}
+    <a class="btn btn-primary" href="{{ url_for('order.new_order') }}">Create a New Order</a>
+{% endif %}
 {% for order in orders %}
 <div class="card mt-3" style="width: 30rem;">
     <div class="card-body">
         <div class="row">
             <div class="col-sm-8">
-                <h5 class="card-title">{{ order["id"] }}: {{ order["vendor"] }}</h5>
-                <p>Item Costs: ${{ order["item_costs"] }}</p>
-                <p>Shipping Costs: ${{ order["shipping_costs"] }}</p>
+                <h5 class="card-title">Order {{ order["id"] }}: {{ order["vendor"] }} <a href="{{ order['vendor_url'] }}"><span class="material-symbols-outlined">public</span></a></h5>
+                <p>Cost: ${{ order["item_costs"] }} + ${{ order["shipping_costs"] }} (shipping)</p>
                 <span class="badge rounded-pill text-bg-secondary">{{ status_enum[order["status"]] }}</span>
             </div>
             <div class="col-sm-4">
                 <a class="w-100 mt-2 btn btn-primary">View</a>
-                {% if order["status"] == 0 %}
-                    <a class="w-100 mt-2 btn btn-secondary">Edit</a>
+                {% if current_user.is_admin() %}
+                    <a class="w-100 mt-2 btn btn-secondary" href="{{ url_for('order.edit_order', order_id = order['id']) }}">Edit</a>
                 {% endif %}
-                {% if order["track_url"] != None %}
-                    <a class="w-100 mt-2 btn btn-info">Track</a>
+                {% if order["track_url"] != None and order["track_url"] != ''%}
+                    <a class="w-100 mt-2 btn btn-info" href="{{ order['track_url'] }}">Track</a>
+                {% endif %}
+                {% if order["status"] == 0 %}
+                    <a class="w-100 mt-2 btn btn-danger" href="{{ url_for('order.delete_order', order_id = order['id']) }}">Delete</a>
                 {% endif %}
             </div>
         </div>

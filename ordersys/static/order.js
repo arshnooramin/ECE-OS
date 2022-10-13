@@ -16,7 +16,7 @@ vendorEl.addEventListener('change', (event) => {
                     <div class="input-group-prepend">
                         <div style="border-top-right-radius:0;border-bottom-right-radius:0;" class="input-group-text">www.</div>
                     </div>
-                    <input class="form-control" name="vendor-other-name" id="vendor-other-url" required>
+                    <input class="form-control" name="vendor-other-url" id="vendor-other-url" required>
                 </div>
             </div>`;
     }
@@ -65,7 +65,7 @@ newitemEl.addEventListener('click', (event) => {
                     </div>
                     <div class="col-md-12 mb-2">
                         <label for="item-justification-${item_id}" class="form-label">Justification</label>
-                        <textarea class="form-control" name="item-justificiation-${item_id}" id="item-justification-${item_id}" required></textarea>
+                        <textarea class="form-control" name="item-justification-${item_id}" id="item-justification-${item_id}" required></textarea>
                     </div>
                     <div class="col-md-12 mb-2">
                         <button id="item-${item_id}-del-btn" class="mt-0 btn btn-danger">

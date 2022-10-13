@@ -32,14 +32,3 @@ def index():
     ).fetchall()
 
     return render_template('admin/index.html', projects=projects)
-
-@bp.route('/delete/<project_id>')
-@login_required
-@admin_required
-def delete_project(project_id):
-    db = get_db()
-    
-    db.execute('DELETE FROM project WHERE id = ?', (project_id,))
-    db.commit()
-    
-    return redirect(url_for('admin.index'))
