@@ -4,21 +4,32 @@ DROP TABLE IF EXISTS item;
 
 CREATE TABLE user (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE NOT NULL
+    project_id INTEGER NOT NULL,
+    email NVARCHAR(255) UNIQUE NOT NULL,
+    name TEXT NOT NULL,
+    auth_level INTEGER NOT NULL,
+    FOREIGN KEY (project_id) REFERENCES project (id)
 );
 
 CREATE TABLE project (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
     name TEXT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES user (id)
+    total FLOAT NOT NULL DEFAULT 0
 );
 
 CREATE TABLE eorder (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     project_id INTEGER NOT NULL,
     vendor TEXT NOT NULL,
+    vendor_url NVARCHAR(255) NOT NULL, 
     created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    order_time INTEGER NOT NULL,
+    shipping_speed INTEGER NOT NULL,
+    status INTEGER NOT NULL DEFAULT 0, 
+    item_costs FLOAT NOT NULL DEFAULT 0,
+    courier INTEGER,
+    track_url NVARCHAR(255),
+    shipping_costs FLOAT NOT NULL DEFAULT 0,
     FOREIGN KEY (project_id) REFERENCES project (id)
 );
 

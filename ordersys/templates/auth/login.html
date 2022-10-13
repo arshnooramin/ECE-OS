@@ -1,17 +1,22 @@
 {% extends 'base.html' %}
 
-{% block header %}
-{% endblock %}
-
 {% block content %}
 <form class="row g-3" method="post">
   <h5>{% block title %}Login{% endblock %}</h5>
   <div class="col-md-4">
-    <label for="username" class="form-label">Email</label>
-    <input class="form-control" name="username" id="username" required>
+    <label for="email" class="form-label">Email Address</label>
+    <input class="form-control" name="email" id="email" required>
   </div>
+  <div class="col-md-10 mb-3">
+    <button type="submit" name="login-type" value="dev" class="mt-0 btn btn-primary">
+      Login <span class="badge text-bg-dark">dev</span>
+    </button>
+  </div>
+  <hr>
   <div class="col-md-10">
-    <button type="submit" value="Register" class="btn btn-primary">Sign in</button>
+    <button type="submit" name="login-type" value="google" class="btn btn-outline-dark">
+      <img width="20px" style="margin-bottom:3px; margin-right:5px" src="https://i.pinimg.com/originals/e4/56/ae/e456ae899196a47d0986ff5f3d3f047a.png" /> Login with BMail
+    </button>
   </div>
 </form>
 {% endblock %}
