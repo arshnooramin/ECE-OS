@@ -32,24 +32,12 @@ def populate_db_command():
         'INSERT INTO project (name, total) VALUES (?, ?)', project_data
     )
     user_data = [
-        (0, "ml005@bucknell.edu", "Matt Lamparter", 0,),
+        (0, "mlampart@bucknell.edu", "Matt Lamparter", 0,),
         (1, "ana002@bucknell.edu", "Arsh Noor Amin", 1,),
-        (2, "jd001@bucknell.edu", "John Doe", 1,),
     ]
     db.executemany(
         'INSERT INTO user (project_id, email, name, auth_level) VALUES (?, ?, ?, ?);', user_data
     )
-    # eorder_data = [
-    #     (1, "Amazon", 0, 90.1),
-    #     (1, "McMaster", 0, 50.5),
-    #     (1, "AliExpress", 0, 30.2),
-    #     (2, "Amazon", 0, 90.1),
-    #     (2, "McMaster", 0, 50.5),
-    #     (2, "AliExpress", 0, 30.2),
-    # ]
-    # db.executemany(
-    #     'INSERT INTO eorder (project_id, vendor, status, subtotal) VALUES (?, ?, ?, ?)', eorder_data
-    # )
     db.commit()
     click.echo('DB populated.')
 

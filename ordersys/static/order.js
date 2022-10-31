@@ -1,5 +1,14 @@
 let item_id = 1;
 
+document.addEventListener("click", (event) => {
+    if (event.target.id.match(/item-\d+-del-btn/)) {
+        const delid = event.target.id.split('-')[1];
+        const delel = document.getElementById('item-' + delid);
+        console.log(delel);
+        delel.remove();
+    }
+});
+
 const vendorEl = document.querySelector('[name="vendor"]');
 
 vendorEl.addEventListener('change', (event) => {
@@ -32,11 +41,11 @@ newitemEl.addEventListener('click', (event) => {
     
     const itemDiv = document.getElementById('items');
     
-    var newItem = document.createElement('div')
-    newItem.setAttribute('id', 'item-' + item_id)
-    newItem.setAttribute('class', 'col-md-8')
+    var newItem = document.createElement('div');
+    newItem.setAttribute('id', 'item-' + item_id);
+    newItem.setAttribute('class', 'col-md-8');
     newItem.innerHTML = 
-        `<div class="card mt-3">
+        `<div class="card mt-3 item-${item_id}">
             <div class="card-body">
                 <div class="row g-3">
                     <div class="col-md-12">
@@ -56,12 +65,12 @@ newitemEl.addEventListener('click', (event) => {
                             <div class="input-group-prepend">
                                 <div style="border-top-right-radius:0;border-bottom-right-radius:0;" class="input-group-text">$</div>
                             </div>
-                            <input step=".01"  type="number" class="form-control" name="item-price-${item_id}" id="item-price-${item_id}" required>
+                            <input min="0" step=".01"  type="number" class="form-control" name="item-price-${item_id}" id="item-price-${item_id}" required>
                         </div>
                     </div>
                     <div class="col-md-12">
                         <label for="item-quantity-${item_id}" class="form-label">Quantity</label>
-                        <input type="number" class="form-control" name="item-quantity-${item_id}" id="item-quantity-${item_id}" required>
+                        <input min="0" type="number" class="form-control" name="item-quantity-${item_id}" id="item-quantity-${item_id}" required>
                     </div>
                     <div class="col-md-12 mb-2">
                         <label for="item-justification-${item_id}" class="form-label">Justification</label>

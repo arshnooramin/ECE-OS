@@ -38,7 +38,7 @@ CREATE TABLE item (
     order_id INTEGER NOT NULL,
     description TEXT NOT NULL,
     item_number TEXT NOT NULL,
-    price INTEGER NOT NULL,
+    price FLOAT NOT NULL,
     quantity INTEGER NOT NULL,
     justification TEXT NOT NULL,
     FOREIGN KEY (order_id) REFERENCES eorder (id)

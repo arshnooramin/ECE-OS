@@ -81,17 +81,18 @@ def edit_order(order_id):
             request.form['order-status'],
             request.form['order-track-url'],
             request.form['order-shipping-costs'],
+            None if int(request.form['order-courier']) < 0 else request.form['order-courier'],
             order_id
         )
 
-        db.execute('UPDATE eorder SET order_time = ?, shipping_speed = ?, status = ?, track_url = ?, shipping_costs = ? WHERE id = ?', order_data)
+        db.execute('UPDATE eorder SET order_time = ?, shipping_speed = ?, status = ?, track_url = ?, shipping_costs = ?, courier = ? WHERE id = ?', order_data)
         db.commit()
 
         project_update_cost(order['project_id'], request.form['order-shipping-costs'])
 
         return redirect(session['prev_project'])
     
-    return render_template('order/edit.html', order=order, vendors=vendors, status_enum=status_enum, order_speed_enum=order_speed_enum, order_date_enum=order_date_enum)
+    return render_template('order/edit.html', order=order, vendors=vendors, status_enum=status_enum, order_speed_enum=order_speed_enum, order_date_enum=order_date_enum, courier_enum=courier_enum)
 
 @bp.route('/delete/<int:order_id>/')
 @login_required

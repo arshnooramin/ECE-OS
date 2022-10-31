@@ -1,30 +1,86 @@
 {% extends 'base.html' %}
 
+{% block modal %}
+{% for order in orders %}
+<div class="modal fade" id="order-modal-{{ order['id'] }}" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="user-modal-label">Order {{ order["id"] }}: {{ order["vendor"] }} <a href="{{ order['vendor_url'] }}" target="_blank"><span class="material-symbols-outlined">public</span></a></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p class="lh-lg card-text">
+                    <b>Total Cost:</b> ${{order['item_costs'] + order['shipping_costs']}}<br>
+                    <b>Items Cost (Subtotal):</b> ${{order['item_costs']}}<br>
+                    <b>Shipping Cost:</b> ${{order['shipping_costs']}}<br>
+                    <b>Order Time:</b> {{ order_date_enum[order['order_time']] }}<br>
+                    <b>Shipping Speed:</b> {{ order_speed_enum[order['shipping_speed']] }}<br>
+                    {% if order['courier'] != None %}
+                        <b>Courier Service:</b> {{ courier_enum[order['courier']] }}<br>
+                    {% else %}
+                        <b>Courier Service:</b> None<br>
+                    {% endif %}
+                    {% if order['track_url'] != None %}
+                        <b>Track URL:</b> <a target="_blank" href="{{ order['track_url'] }}">{{ order['track_url'] }}</a><br>
+                    {% else %}
+                        <b>Track URL:</b> None<br>
+                    {% endif %}
+                    <span class="badge rounded-pill text-bg-secondary">Status: {{ status_enum[order["status"]] }}</span>
+                </p>
+
+                <hr>
+                {% for item in item_obj[order['id']] %}
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <h6 class="card-title">Item {{ item['id'] }}: {{ item['item_number'] }}</h6>
+                            <p class="card-text"><b>Description:</b> {{item['description']}}<br>
+                                                 <b>Justification:</b> {{item['justification']}}<br>
+                                                 <b>Price per Unit:</b> ${{item['price']}}<br>
+                                                 <b>Quantity:</b> {{item['quantity']}}
+
+                            </p>
+                            <hr>
+                            <p class="card-text"><b>Total Item Cost:</b> ${{item['quantity'] * item['price']}}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
+
 {% block content %}
 <h3 class="mb-3">{% block title %}Project: {{ project["name"] }}{% endblock %}</h3>
-<h5 class="mb-4">Total Cost: ${{ project["total"] }}</h5>
+<h5 class="mb-3">Total Cost: ${{ project["total"] }}</h5>
 {% if not current_user.is_admin() %}
-    <a class="btn btn-primary" href="{{ url_for('order.new_order') }}">Create a New Order</a>
+<a class="btn btn-primary" href="{{ url_for('order.new_order') }}">Create a New Order</a>
 {% endif %}
 {% for order in orders %}
-<div class="card mt-3" style="width: 30rem;">
+<div class="card mt-4" style="width: 30rem;">
     <div class="card-body">
         <div class="row">
             <div class="col-sm-8">
-                <h5 class="card-title">Order {{ order["id"] }}: {{ order["vendor"] }} <a href="{{ order['vendor_url'] }}"><span class="material-symbols-outlined">public</span></a></h5>
+                <h5 class="card-title">Order {{ order["id"] }}: {{ order["vendor"] }}
+                    <a href="{{ order['vendor_url'] }}" target="_blank"><span class="material-symbols-outlined">public</span></a></h5>
                 <p>Cost: ${{ order["item_costs"] }} + ${{ order["shipping_costs"] }} (shipping)</p>
-                <span class="badge rounded-pill text-bg-secondary">{{ status_enum[order["status"]] }}</span>
+                <span class="badge rounded-pill text-bg-secondary">Status: {{ status_enum[order["status"]] }}</span>
             </div>
             <div class="col-sm-4">
-                <a class="w-100 mt-2 btn btn-primary">View</a>
+                <button class="w-100 mt-2 btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#order-modal-{{ order['id'] }}">View</button>
                 {% if current_user.is_admin() %}
-                    <a class="w-100 mt-2 btn btn-secondary" href="{{ url_for('order.edit_order', order_id = order['id']) }}">Edit</a>
+                <a class="w-100 mt-2 btn btn-secondary"
+                    href="{{ url_for('order.edit_order', order_id = order['id']) }}">Edit</a>
                 {% endif %}
                 {% if order["track_url"] != None and order["track_url"] != ''%}
-                    <a class="w-100 mt-2 btn btn-info" href="{{ order['track_url'] }}">Track</a>
+                <a class="w-100 mt-2 btn btn-info" target="_blank" href="{{ order['track_url'] }}">Track</a>
                 {% endif %}
                 {% if order["status"] == 0 %}
-                    <a class="w-100 mt-2 btn btn-danger" href="{{ url_for('order.delete_order', order_id = order['id']) }}">Delete</a>
+                <a class="w-100 mt-2 btn btn-danger"
+                    href="{{ url_for('order.delete_order', order_id = order['id']) }}">Delete</a>
                 {% endif %}
             </div>
         </div>
@@ -33,8 +89,5 @@
         Added {{ order["created"] }}
     </div>
 </div>
-<!-- {% if not loop.last %}
-            <hr>
-        {% endif %} -->
 {% endfor %}
 {% endblock %}

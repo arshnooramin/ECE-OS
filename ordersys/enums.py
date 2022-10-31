@@ -35,4 +35,12 @@ order_date_enum = {
     1: "Immediate"
 }
 
+courier_enum = {
+    0: "USPS",
+    1: "FedEx",
+    2: "UPS",
+    3: "DHL",
+    4: "Other"
+}
+
 

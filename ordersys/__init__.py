@@ -43,5 +43,14 @@ def create_app(test_config=None):
                 return redirect(url_for('project.index'))
         else:
             return redirect(url_for('auth.login'))
+    
+    @app.context_processor
+    def utility_processor():
+        def get_username(email):
+            if email:
+                return email.split('@')[0]
+            else:
+                return None
+        return dict(get_username=get_username)
 
     return app
