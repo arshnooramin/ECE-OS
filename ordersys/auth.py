@@ -54,7 +54,6 @@ def login():
                 return redirect(url_for('project.index'))
         
         else:
-            print(URL + url_for("auth.callback"))
             google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
             authorization_endpoint = google_provider_cfg["authorization_endpoint"]
             request_uri = client.prepare_request_uri(
@@ -71,7 +70,6 @@ def login():
 def callback():
     google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
     token_endpoint = google_provider_cfg["token_endpoint"]
-    print(URL + request.url.split(URL)[1])
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
         authorization_response = URL + request.url.split(request.host)[1],
