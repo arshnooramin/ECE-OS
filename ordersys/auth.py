@@ -73,7 +73,7 @@ def callback():
 
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
-        authorization_response = request.url,
+        authorization_response = URL,
         redirect_url = URL,
         code = request.args.get("code")
     )
