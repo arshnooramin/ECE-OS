@@ -55,9 +55,10 @@ def login():
         else:
             google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
             authorization_endpoint = google_provider_cfg["authorization_endpoint"]
+            print(request.host)
             request_uri = client.prepare_request_uri(
                 authorization_endpoint,
-                redirect_uri = url_for("auth.login") + "/callback",
+                redirect_uri = request.base_url + "/callback",
                 scope = ["openid", "email", "profile"],
             )
         
@@ -73,7 +74,7 @@ def callback():
     token_url, headers, body = client.prepare_token_request(
         token_endpoint,
         authorization_response = request.url,
-        redirect_url = url_for("auth.callback"),
+        redirect_url = request.base_url,
         code = request.args.get("code")
     )
 
