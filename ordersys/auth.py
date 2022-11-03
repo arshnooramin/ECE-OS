@@ -56,7 +56,6 @@ def login():
         else:
             google_provider_cfg = requests.get(GOOGLE_DISCOVERY_URL).json()
             authorization_endpoint = google_provider_cfg["authorization_endpoint"]
-            print(request.host)
             request_uri = client.prepare_request_uri(
                 authorization_endpoint,
                 redirect_uri = URL + url_for("auth.callback"),
