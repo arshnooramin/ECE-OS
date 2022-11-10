@@ -139,7 +139,7 @@ def xlsx_gen(csv_proj):
                 csheet.write_number(row, col, order['shipping_costs'], fdollar); col += 1
                 csheet.write_number(row, col, order['item_costs'] + order['shipping_costs'], fdollar); col += 1
                 csheet.write_string(row, col, status_enum[order['status']]); col += 1
-                csheet.write_url(row, col, order['track_url']); col += 1
+                csheet.write_url(row, col, 'None' if not  order['track_url'] else order['track_url']); col += 1
                 csheet.write_string(row, col, 'None' if not order['courier'] else courier_enum[order['courier']]); col += 1
                 row += 1 
     
