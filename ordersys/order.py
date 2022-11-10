@@ -19,6 +19,8 @@ def new_order():
         if request.form['vendor'] == 'Other':
             vendor = request.form['vendor-other-name']
             vendor_url = request.form['vendor-other-url']
+            if '//' in vendor_url:
+                vendor_url = vendor_url.split('//')[1]
         else:
             vendor = request.form['vendor']
             vendor_url = vendors[vendor]
@@ -75,11 +77,14 @@ def edit_order(order_id):
     ).fetchone()
 
     if request.method == 'POST':
+        track_url = request.form['order-track-url']
+        if '//' in track_url:
+            track_url = track_url.split('//')[1]
         order_data = (
             request.form['order-date'],
             request.form['order-speed'],
             request.form['order-status'],
-            request.form['order-track-url'],
+            track_url,
             request.form['order-shipping-costs'],
             None if int(request.form['order-courier']) < 0 else request.form['order-courier'],
             order_id
@@ -88,6 +93,7 @@ def edit_order(order_id):
         db.execute('UPDATE eorder SET order_time = ?, shipping_speed = ?, status = ?, track_url = ?, shipping_costs = ?, courier = ? WHERE id = ?', order_data)
         db.commit()
 
+        project_update_cost(order['project_id'], -1*order['shipping_costs'])
         project_update_cost(order['project_id'], request.form['order-shipping-costs'])
 
         return redirect(session['prev_project'])

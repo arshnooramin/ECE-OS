@@ -43,7 +43,7 @@ def login():
             user = User.get(email, param_type=1)
 
             if not user:
-                flash('You are not a designated Project Manager. Please contact Matt Lamparter.')
+                flash('You are not a designated Project Manager. Please contact Matt Lamparter.', 'error')
                 return redirect(url_for("auth.login"))
 
             login_user(user)

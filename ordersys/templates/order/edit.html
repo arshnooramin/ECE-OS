@@ -81,7 +81,7 @@
         </button>
     </div>
     <div class="col-md-3">
-        <a id="new-item-btn" href="{{url_for('project.index')}}" class="w-100 btn btn-danger">
+        <a id="new-item-btn" href="{{session['prev_project']}}" class="w-100 btn btn-danger">
             Cancel
         </a>
     </div>

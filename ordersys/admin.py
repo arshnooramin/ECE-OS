@@ -38,17 +38,32 @@ def index():
             db.execute('INSERT INTO project (name) VALUES (?)', (project_name,))
             db.commit()
             flash('New project successfully added.', 'success')
+            return redirect(url_for("admin.index"))
         else:
+            if '@' in request.form['email']:
+                flash('Only include username when adding a PM (exclude @bucknell.edu)', 'error')
+                return redirect(url_for('admin.index'))
+            cur = db.cursor()
             user_data = (
                 str(request.form['project-id']), 
                 request.form['user-name'],
                 request.form['email'] + '@bucknell.edu', 1
-                )
-            db.execute(
-                'INSERT INTO user (project_id, name, email, auth_level) VALUES (?, ?, ?, ?);', user_data
             )
-            db.commit()
-            flash('New PM successfully added.', 'success')
+
+            project = db.execute(
+                "SELECT * FROM project WHERE id = ?", (request.form['project-id'],)
+            ).fetchone()
+            if project['user_id'] != None:
+                flash('Project already has an assigned PM.', 'error')
+            else:
+                cur.execute(
+                    'INSERT INTO user (project_id, name, email, auth_level) VALUES (?, ?, ?, ?);', user_data
+                )
+                user_id = cur.lastrowid
+                db.execute('UPDATE project SET user_id = ? WHERE id = ?', (user_id, request.form['project-id'],))
+                db.commit()
+                flash('New PM successfully added.', 'success')
+            return redirect(url_for("admin.index"))
 
     return render_template('admin/index.html', projects=projects)
 
@@ -59,6 +74,7 @@ def delete_user(user_id):
     db = get_db()
     
     db.execute('DELETE FROM user WHERE id = ?', (user_id,))
+    db.execute('UPDATE project SET user_id = ? WHERE user_id = ?', (None, user_id,))
     db.commit()
     flash('PM successfully deleted.', 'success')
 
@@ -95,25 +111,9 @@ def xlsx_gen(csv_proj):
     for project in csv_proj:
         csheet = xfile.add_worksheet(project['project_name'])
         
-        csheet.set_column(0, 0, 20)
-        csheet.set_column(1, 1, 20)
-        csheet.set_column(2, 2, 30)
-        csheet.set_column(3, 3, 30)
-        csheet.set_column(4, 4, 30)
-        csheet.set_column(5, 5, 10)
-        csheet.set_column(6, 6, 15)
-        csheet.set_column(7, 7, 50)
-        csheet.set_column(8, 8, 15)
-        csheet.set_column(9, 9, 15)
-        csheet.set_column(10, 10, 15)
-        csheet.set_column(11, 11, 15)
-        csheet.set_column(12, 12, 12)
-        csheet.set_column(13, 13, 15)
-        csheet.set_column(14, 14, 30)
-        csheet.set_column(15, 15, 12)
+        csheet.set_column(0, 15, 20)
 
         for idx, header in enumerate(headers):
-            print(ascii_uppercase[idx])
             csheet.write(ascii_uppercase[idx] + '1', header, fbold)
 
         orders = db.execute(

@@ -24,16 +24,16 @@ def init_db_command():
 @click.command('populate-db')
 def populate_db_command():
     db = get_db()
-    project_data = [
-        ("Northrop Grumman",0,),
-        ("Keurig", 0,),
-    ]
-    db.executemany(
-        'INSERT INTO project (name, total) VALUES (?, ?)', project_data
-    )
+    # project_data = [
+    #     ("Northrop Grumman",0,),
+    #     ("Keurig", 0,),
+    # ]
+    # db.executemany(
+    #     'INSERT INTO project (name, total) VALUES (?, ?)', project_data
+    # )
     user_data = [
         (0, "mlampart@bucknell.edu", "Matt Lamparter", 0,),
-        (1, "ana002@bucknell.edu", "Arsh Noor Amin", 1,),
+        # (1, "ana002@bucknell.edu", "Arsh Noor Amin", 1,),
     ]
     db.executemany(
         'INSERT INTO user (project_id, email, name, auth_level) VALUES (?, ?, ?, ?);', user_data

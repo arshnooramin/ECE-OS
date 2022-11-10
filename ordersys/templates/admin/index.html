@@ -67,7 +67,7 @@
         <div class="row">
             <div class="col-sm-8">
                 <h5 class="card-title">{{ project["project_name"] }}</h5>
-                <p class="my-2">Total: ${{ project["total"] }}</p>
+                <p class="my-2">Total: {{ "$%.2f" | format(project["total"]) }}</p>
                 {% if project["user_email"] == None %}
                     <button class="mb-2 disabled btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">PM: {{ get_username(project["user_email"]) }}</button>
                 {% else %}

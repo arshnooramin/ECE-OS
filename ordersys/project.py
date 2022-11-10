@@ -23,9 +23,11 @@ def index():
     item_obj = dict()     
     project_id = current_user.project_id
     db = get_db()
+    
     project = db.execute(
         'SELECT * FROM project WHERE id = ?', (project_id,)
     ).fetchone()
+
     orders = db.execute(
         'SELECT * FROM eorder o JOIN project p ON p.id = o.project_id WHERE p.id = ? ORDER BY created DESC', (project_id,)
     ).fetchall()
@@ -64,8 +66,9 @@ def index_admin(project_id):
 @admin_required
 def delete_project(project_id):
     db = get_db()
-    
+    db.execute('DELETE FROM user WHERE project_id = ?', (project_id,))
     db.execute('DELETE FROM project WHERE id = ?', (project_id,))
     db.commit()
-    
+    flash('Project successfully deleted.', 'success')
+
     return redirect(url_for('admin.index'))
