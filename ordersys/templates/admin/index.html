@@ -22,7 +22,7 @@
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" name="add-type" value="user" class="btn btn-primary">Save</button>
+                    <button type="submit" name="type" value="user" class="btn btn-primary">Save</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>
@@ -39,24 +39,26 @@
     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         Export
     </button>
-    <form class="dropdown-menu p-4">
+    <form method="post" class="dropdown-menu p-4">
         <div class="mb-3">
             <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="dropdownCheck2">
+                <input type="checkbox" class="form-check-input" id="all-check" name="all-project-check">
                 <label class="form-check-label" for="dropdownCheck2">
                 All Projects
                 </label>
             </div>
-            {% for project in projects %}
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="dropdownCheck2">
-                <label class="form-check-label" for="dropdownCheck2">
-                {{ project["project_name"] }}
-                </label>
+            <div id="project-check">
+                {% for project in projects %}
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="dropdownCheck2" name="{{ project['project_id'] }}-project-check">
+                    <label class="form-check-label" for="dropdownCheck2">
+                    {{ project["project_name"] }}
+                    </label>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
-        <button type="submit" class="w-100 btn btn-outline-success">Download</button>
+        <button type="submit" name="type" value="csv" class="w-100 btn btn-outline-success">Download</button>
     </form>
 </div>
 {% for project in projects %}
@@ -67,9 +69,9 @@
                 <h5 class="card-title">{{ project["project_name"] }}</h5>
                 <p class="my-2">Total: ${{ project["total"] }}</p>
                 {% if project["user_email"] == None %}
-                    <button class="disabled btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">PM: {{ get_username(project["user_email"]) }}</button>
+                    <button class="mb-2 disabled btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">PM: {{ get_username(project["user_email"]) }}</button>
                 {% else %}
-                    <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">PM: {{ get_username(project["user_email"]) }}</button>
+                    <button class="mb-2 btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">PM: {{ get_username(project["user_email"]) }}</button>
                     <ul class="dropdown-menu">
                         <li><h6 class="dropdown-header">{{ project["user_name"] }}</h6></li>
                         <li><a class="dropdown-item" href="{{ url_for('admin.delete_user', user_id = project['user_id']) }}">Delete</a></li>
@@ -98,7 +100,7 @@
                     <input class="form-control" name="project-name" id="project-name" required>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" name="add-type" value="project" class="btn btn-primary">Save</button>
+                    <button type="submit" name="type" value="project" class="btn btn-primary">Save</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 </div>
             </div>

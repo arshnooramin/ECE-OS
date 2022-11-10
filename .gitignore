@@ -18,9 +18,8 @@ build/
 docs/_build/
 .vscode
 instance/
-
-# Coverage reports
 htmlcov/
 .coverage
 .coverage.*
 *,cover
+*outputs/

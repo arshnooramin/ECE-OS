@@ -1,4 +1,9 @@
 from flask import *
+import os
+from string import ascii_uppercase
+from datetime import datetime
+from ordersys.enums import *
+import xlsxwriter
 from ordersys.db import get_db
 from flask_login import login_required
 from ordersys.auth import admin_required
@@ -10,9 +15,25 @@ bp = Blueprint('admin', __name__, url_prefix='/admin')
 @admin_required
 def index():
     db = get_db()
+    projects = db.execute(
+        'SELECT p.id AS project_id, p.name AS project_name, p.total AS project_total, u.name AS user_name, u.id AS user_id, u.email AS user_email, p.name AS project_name, p.total AS total FROM project p LEFT JOIN user u ON p.id = u.project_id'
+    ).fetchall()
     
     if request.method == 'POST':
-        if request.form['add-type'] == 'project':
+        if request.form['type'] == 'csv':
+            csv_proj = list()
+            all = list()
+            for project in projects:
+                all.append(project)
+                if request.form.get(f"{project['project_id']}-project-check"):
+                    csv_proj.append(project)
+            if request.form.get('all-project-check'):
+                fname = xlsx_gen(all)
+            else:
+                fname = xlsx_gen(csv_proj)
+            return send_file(fname, as_attachment=True)
+
+        elif request.form['type'] == 'project':
             project_name = request.form['project-name']
             db.execute('INSERT INTO project (name) VALUES (?)', (project_name,))
             db.commit()
@@ -29,10 +50,6 @@ def index():
             db.commit()
             flash('New PM successfully added.', 'success')
 
-    projects = db.execute(
-        'SELECT p.id AS project_id, u.name AS user_name, u.id AS user_id, u.email AS user_email, p.name AS project_name, p.total AS total FROM project p LEFT JOIN user u ON p.id = u.project_id'
-    ).fetchall()
-
     return render_template('admin/index.html', projects=projects)
 
 @bp.route('/delete_user/<int:user_id>')
@@ -46,4 +63,88 @@ def delete_user(user_id):
     flash('PM successfully deleted.', 'success')
 
     return redirect(url_for('admin.index'))
+
+def xlsx_gen(csv_proj):
+    db = get_db()
+    headers = [
+        'Timestamp',
+        'Vendor',
+        'Vendor URL',
+        'Item Description',
+        'Item Number',
+        'Item Price',
+        'Item Quantity',
+        'Item Justification',
+        'Order Date',
+        'Shipping Speed',
+        'Order Subtotal',
+        'Shipping Costs',
+        'Order Total',
+        'Order Status',
+        'Tracking',
+        'Courier'
+    ]
+
+    fname = os.path.join(current_app.root_path, 'outputs', datetime.now().strftime('eceordering-%Y-%m-%d-%H-%M.xlsx'))
+    xfile = xlsxwriter.Workbook(fname)
+    fbold = xfile.add_format({'bold': 1})
+    fdollar = xfile.add_format({'num_format': '$ #,##0.00'})
+    fdt = xfile.add_format({'num_format': 'mm/dd/yyyy hh:mm:ss'})
+    row = 1
+    
+    for project in csv_proj:
+        csheet = xfile.add_worksheet(project['project_name'])
+        
+        csheet.set_column(0, 0, 20)
+        csheet.set_column(1, 1, 20)
+        csheet.set_column(2, 2, 30)
+        csheet.set_column(3, 3, 30)
+        csheet.set_column(4, 4, 30)
+        csheet.set_column(5, 5, 10)
+        csheet.set_column(6, 6, 15)
+        csheet.set_column(7, 7, 50)
+        csheet.set_column(8, 8, 15)
+        csheet.set_column(9, 9, 15)
+        csheet.set_column(10, 10, 15)
+        csheet.set_column(11, 11, 15)
+        csheet.set_column(12, 12, 12)
+        csheet.set_column(13, 13, 15)
+        csheet.set_column(14, 14, 30)
+        csheet.set_column(15, 15, 12)
+
+        for idx, header in enumerate(headers):
+            print(ascii_uppercase[idx])
+            csheet.write(ascii_uppercase[idx] + '1', header, fbold)
+
+        orders = db.execute(
+            'SELECT * FROM eorder WHERE project_id = ?', (project['project_id'],)
+        ).fetchall()
+        for order in orders:
+            items = db.execute(
+                'SELECT * FROM item WHERE order_id = ?', (order['id'],)
+            ).fetchall()
+            for item in items:
+                col = 0
+                csheet.write_datetime(row, col, order['created'], fdt); col += 1
+                csheet.write_string(row, col, order['vendor']); col += 1
+                csheet.write_url(row, col, order['vendor_url']); col += 1
+                csheet.write_string(row, col, item['description']); col += 1
+                csheet.write_string(row, col, item['item_number']); col += 1
+                csheet.write_number(row, col, item['price'], fdollar); col += 1
+                csheet.write_number(row, col, item['quantity']); col += 1
+                csheet.write_string(row, col, item['justification']); col += 1
+                csheet.write_string(row, col, order_date_enum[order['order_time']]); col += 1
+                csheet.write_string(row, col, order_speed_enum[order['shipping_speed']]); col += 1
+                csheet.write_number(row, col, order['item_costs'], fdollar); col += 1
+                csheet.write_number(row, col, order['shipping_costs'], fdollar); col += 1
+                csheet.write_number(row, col, order['item_costs'] + order['shipping_costs'], fdollar); col += 1
+                csheet.write_string(row, col, status_enum[order['status']]); col += 1
+                csheet.write_url(row, col, order['track_url']); col += 1
+                csheet.write_string(row, col, 'None' if not order['courier'] else courier_enum[order['courier']]); col += 1
+                row += 1 
+    
+    xfile.close()
+
+    return fname
+
 

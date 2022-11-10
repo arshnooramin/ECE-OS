@@ -9,6 +9,17 @@ document.addEventListener("click", (event) => {
     }
 });
 
+const acheckEl = document.getElementById('all-check');
+acheckEl.addEventListener("change", (event) => {
+    const pcheckEl = document.getElementById('project-check');
+    if (acheckEl.checked == true) {
+        pcheckEl.style.display = 'none';
+    }
+    else {
+        pcheckEl.style.display = 'block';
+    }
+})
+
 const vendorEl = document.querySelector('[name="vendor"]');
 
 vendorEl.addEventListener('change', (event) => {
