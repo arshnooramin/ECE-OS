@@ -31,6 +31,7 @@ def index():
                 fname = xlsx_gen(all)
             else:
                 fname = xlsx_gen(csv_proj)
+            flash('Exported file downloading.', 'success')
             return send_file(fname, as_attachment=True)
 
         elif request.form['type'] == 'project':

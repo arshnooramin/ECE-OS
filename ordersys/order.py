@@ -63,6 +63,7 @@ def new_order():
 
         project_update_cost(current_user.project_id, item_costs)
         
+        flash('Order successfully created.', 'success')
         return redirect(url_for('project.index'))
 
     return render_template('order/new.html', vendors=vendors)
@@ -96,6 +97,7 @@ def edit_order(order_id):
         project_update_cost(order['project_id'], -1*order['shipping_costs'])
         project_update_cost(order['project_id'], request.form['order-shipping-costs'])
 
+        flash('Order successfully modified.', 'success')
         return redirect(session['prev_project'])
     
     return render_template('order/edit.html', order=order, vendors=vendors, status_enum=status_enum, order_speed_enum=order_speed_enum, order_date_enum=order_date_enum, courier_enum=courier_enum)
@@ -114,4 +116,5 @@ def delete_order(order_id):
 
     project_update_cost(order['project_id'], -1*(order['item_costs'] + order['shipping_costs']))
     
+    flash('Order successfully deleted.', 'success')
     return redirect(session['prev_project']) if current_user.is_admin() else redirect(url_for('project.index'))
