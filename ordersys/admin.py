@@ -106,9 +106,10 @@ def xlsx_gen(csv_proj):
     fbold = xfile.add_format({'bold': 1})
     fdollar = xfile.add_format({'num_format': '$ #,##0.00'})
     fdt = xfile.add_format({'num_format': 'mm/dd/yyyy hh:mm:ss'})
-    row = 1
     
     for project in csv_proj:
+        row = 1
+        
         csheet = xfile.add_worksheet(project['project_name'])
         
         csheet.set_column(0, 15, 20)
