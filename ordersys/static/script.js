@@ -79,7 +79,7 @@ if (newitemEl) {
                                 <div class="input-group-prepend">
                                     <div style="border-top-right-radius:0;border-bottom-right-radius:0;" class="input-group-text">$</div>
                                 </div>
-                                <input min="0.01" step=".1"  type="number" class="form-control" name="item-price-${item_id}" id="item-price-${item_id}" required>
+                                <input step="0.01"  type="number" class="form-control" name="item-price-${item_id}" id="item-price-${item_id}" required>
                             </div>
                         </div>
                         <div class="col-md-12">
