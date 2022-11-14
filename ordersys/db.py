@@ -7,6 +7,7 @@ def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)
     app.cli.add_command(populate_db_command)
+    app.cli.add_command(add_admins_command)
 
 
 def init_db():
@@ -19,6 +20,22 @@ def init_db():
 def init_db_command():
     init_db()
     click.echo('Initialized the database.')
+
+@click.command('add-admins')
+def add_admins_command():
+    db = get_db()
+
+    admin_data = [
+        (0, "blb033@bucknell.edu", "Ben Buentello", 0),
+        (0, "srd010@bucknell.edu", "Susan Dudt", 0),
+        (0, "qnt001@bucknell.edu", "Quan Nguyen Tu", 0),
+        (0, "eu003@bucknell.edu", "Eren Ugur", 0)
+    ]
+    db.executemany(
+        'INSERT INTO user (project_id, email, name, auth_level) VALUES (?, ?, ?, ?);', admin_data
+    )
+    db.commit()
+    click.echo('Admins added.')
 
 
 @click.command('populate-db')
