@@ -56,7 +56,11 @@
 <h3 class="mb-3">{% block title %}Project: {{ project["name"] }}{% endblock %}</h3>
 <h5 class="mb-3">Total Cost: {{ "$%.2f" | format(project['total']) }}</h5>
 {% if not current_user.is_admin() %}
-<a class="btn btn-primary" href="{{ url_for('order.new_order') }}">Create a New Order</a>
+<div class="row" style="max-width: 30rem;">
+    <div class="pt-1 pe-1 pb-1 col-md-8 mt-1">
+        <a class="w-100 btn btn-primary" href="{{ url_for('order.new_order') }}">+ New Order</a>
+    </div>
+</div>
 {% endif %}
 {% for order in orders %}
 <div class="card mt-4" style="max-width: 30rem;">

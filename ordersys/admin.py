@@ -1,5 +1,6 @@
 from flask import *
 import os
+from sqlite3 import IntegrityError
 from string import ascii_uppercase
 from datetime import datetime
 from ordersys.enums import *
@@ -17,6 +18,9 @@ def index():
     db = get_db()
     projects = db.execute(
         'SELECT p.id AS project_id, p.name AS project_name, p.total AS project_total, u.name AS user_name, u.id AS user_id, u.email AS user_email, p.name AS project_name, p.total AS total FROM project p LEFT JOIN user u ON p.id = u.project_id'
+    ).fetchall()
+    admins = db.execute(
+        'SELECT * FROM user WHERE auth_level = 0'
     ).fetchall()
     
     if request.method == 'POST':
@@ -40,7 +44,7 @@ def index():
             db.commit()
             flash('New project successfully added.', 'success')
             return redirect(url_for("admin.index"))
-        else:
+        elif request.form['type'] == 'user':
             if '@' in request.form['email']:
                 flash('Only include username when adding a PM (exclude @bucknell.edu)', 'error')
                 return redirect(url_for('admin.index'))
@@ -57,16 +61,46 @@ def index():
             if project['user_id'] != None:
                 flash('Project already has an assigned PM.', 'error')
             else:
-                cur.execute(
-                    'INSERT INTO user (project_id, name, email, auth_level) VALUES (?, ?, ?, ?);', user_data
-                )
+                try:
+                    cur.execute(
+                        'INSERT INTO user (project_id, name, email, auth_level) VALUES (?, ?, ?, ?);', user_data
+                    )
+                except IntegrityError as err:
+                    if 'UNIQUE' in err.args[0]:
+                        flash('User already exists. You can not add or reassign existing users.', 'error')
+                    else:
+                        flash('Database integrity error.', 'error')
+                    return redirect(url_for("admin.index"))
                 user_id = cur.lastrowid
                 db.execute('UPDATE project SET user_id = ? WHERE id = ?', (user_id, request.form['project-id'],))
                 db.commit()
                 flash('New PM successfully added.', 'success')
             return redirect(url_for("admin.index"))
+        elif request.form['type'] == 'admin':
+            if '@' in request.form['email']:
+                flash('Only include username when adding a PM (exclude @bucknell.edu)', 'error')
+                return redirect(url_for('admin.index'))
+            cur = db.cursor()
+            user_data = (
+                0, 
+                request.form['user-name'],
+                request.form['email'] + '@bucknell.edu', 0
+            )
+            try:
+                cur.execute(
+                    'INSERT INTO user (project_id, name, email, auth_level) VALUES (?, ?, ?, ?);', user_data
+                )
+            except IntegrityError as err:
+                if 'UNIQUE' in err.args[0]:
+                    flash('User already exists. You can not add or reassign existing users.', 'error')
+                else:
+                    flash('Database integrity error.', 'error')
+                return redirect(url_for("admin.index"))
+            db.commit()
+            flash('New Admin successfully added.', 'success')
+            return redirect(url_for("admin.index"))
 
-    return render_template('admin/index.html', projects=projects)
+    return render_template('admin/index.html', projects=projects, admins=admins)
 
 @bp.route('/delete_user/<int:user_id>')
 @login_required
@@ -77,7 +111,7 @@ def delete_user(user_id):
     db.execute('DELETE FROM user WHERE id = ?', (user_id,))
     db.execute('UPDATE project SET user_id = ? WHERE user_id = ?', (None, user_id,))
     db.commit()
-    flash('PM successfully deleted.', 'success')
+    flash('User successfully deleted.', 'success')
 
     return redirect(url_for('admin.index'))
 

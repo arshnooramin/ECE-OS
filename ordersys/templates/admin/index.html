@@ -29,40 +29,102 @@
         </form>
     </div>
 </div>
+
+<div class="modal fade" style="overflow-y:auto !important;" id="admin-modal" tabindex="-1" aria-labelledby="admin-modal-label" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <form class="modal-content" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="admin-modal-label">Manage Admins</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6 class="mb-3">Add a New Admin</h6>
+                    <label for="user-name" class="form-label">Full Name</label>
+                    <input class="mb-3 form-control" name="user-name" id="user-name" required>
+                    <label for="email" class="form-label">Bucknell Username</label>
+                    <input class="mb-4 form-control" name="email" id="email" required>
+                    <hr>
+                    <h6 class="mt-4 mb-4">Delete Existing Admin</h6>
+                    <ul class="list-group">
+                        {% for admin in admins %}
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col-md-10 my-auto">{{admin['name']}} <code class="text-secondary">{{admin['email']}}</code></div>
+                                {% if current_user.email == admin['email'] %}
+                                <div class="col-md-2"><button class="pb-1 btn btn-danger" disabled><span class="material-symbols-outlined">
+                                    delete
+                                </span></button></div>
+                                {% else %}
+                                <div class="col-md-2"><a href="{{ url_for('admin.delete_user', user_id = admin['id']) }}" class="pb-1 btn btn-danger"><span class="material-symbols-outlined">
+                                    delete
+                                </span></a></div>
+                                {% endif %}
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" name="type" value="admin" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block content %}
-<h3 class="mb-3">{% block title %}Administrator{% endblock %}</h3>
+<h3 class="mb-2">{% block title %}Administrator{% endblock %}</h3>
 <div class="mb-3">
-    <button class="mr-4 btn btn-primary" data-bs-toggle="modal" data-bs-target="#project-modal">Add a New Project</button>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#user-modal">Add a New PM</button>
-    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Export
-    </button>
-    <form method="post" class="dropdown-menu p-4">
-        <div class="mb-3">
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="all-check" name="all-project-check">
-                <label class="form-check-label" for="dropdownCheck2">
-                All Projects
-                </label>
-            </div>
-            <div id="project-check">
-                {% for project in projects %}
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="dropdownCheck2" name="{{ project['project_id'] }}-project-check">
-                    <label class="form-check-label" for="dropdownCheck2">
-                    {{ project["project_name"] }}
-                    </label>
-                </div>
-                {% endfor %}
-            </div>
+    <div class="row" style="max-width: 30rem;">
+        <div class="pt-1 pe-1 pb-1 col-md-5 mt-1">
+            <button class="w-100 mr-4 btn btn-primary" data-bs-toggle="modal" data-bs-target="#project-modal">+ New Project</button>
         </div>
-        <button type="submit" name="type" value="csv" class="w-100 btn btn-outline-success">Download</button>
-    </form>
+        <div class="pt-1 pe-1 pb-1 col-md-4 mt-1">
+            <button class="w-100 btn btn-primary" data-bs-toggle="modal" data-bs-target="#user-modal">+ New PM</button>
+        </div>
+        <div class="pt-1 pe-1 pb-1 col-md-3 mt-1">
+            <button class="w-100 btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Export
+            </button>
+            <form method="post" class="dropdown-menu p-4">
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="all-check" name="all-project-check">
+                        <label class="form-check-label" for="dropdownCheck2">
+                        All Projects
+                        </label>
+                    </div>
+                    <div id="project-check">
+                        {% for project in projects %}
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="dropdownCheck2" name="{{ project['project_id'] }}-project-check">
+                            <label class="form-check-label" for="dropdownCheck2">
+                            {{ project["project_name"] }}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <button type="submit" name="type" value="csv" class="w-100 btn btn-outline-success">Download</button>
+            </form>
+        </div>
+    </div>
+    {% if current_user.is_admin() and current_user.is_superuser() %}
+    <div class="row" style="max-width: 30rem;">
+        <div class="pt-1 pe-1 pb-1 col-md-6 mt-1">
+            <button class="w-100 mr-4 btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#admin-modal">Manage Admins</button>
+        </div>
+        <div class="pt-1 pe-1 pb-1 col-md-6 mt-1">
+            <button class="w-100 mr-4 btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#email-modal" disabled>Email Settings</button>
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% for project in projects %}
-<div class="card mt-4" style="max-width: 25rem;">
+<div class="card mt-4" style="max-width: 30rem;">
     <div class="card-body">
         <div class="row">
             <div class="col-sm-8">

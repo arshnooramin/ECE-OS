@@ -1,3 +1,6 @@
+import os
+from dotenv import load_dotenv
+
 from flask_login import UserMixin
 from ordersys.db import get_db
 
@@ -8,6 +11,9 @@ class User(UserMixin):
         self.name = name
         self.auth_level = auth_level
         self.project_id = project_id
+    
+    def is_superuser(self):
+        return self.email == os.environ.get('SUPER_USER_EMAIL')
 
     def is_admin(self):
         return self.auth_level == 0

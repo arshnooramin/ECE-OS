@@ -1,5 +1,6 @@
 import re
 from flask import *
+from ordersys.emailer import *
 from ordersys.db import get_db
 from flask_login import login_required, current_user
 from ordersys.enums import *
@@ -62,7 +63,7 @@ def new_order():
         db.commit()
 
         project_update_cost(current_user.project_id, item_costs)
-        
+        send_order_email(order_id, vendor, url_for('project.index_admin', project_id=current_user.project_id), current_user)
         flash('Order successfully created.', 'success')
         return redirect(url_for('project.index'))
 
