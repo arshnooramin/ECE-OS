@@ -35,7 +35,6 @@ def index():
                 fname = xlsx_gen(all)
             else:
                 fname = xlsx_gen(csv_proj)
-            flash('Exported file downloading.', 'success')
             return send_file(fname, as_attachment=True)
 
         elif request.form['type'] == 'project':
@@ -159,6 +158,11 @@ def xlsx_gen(csv_proj):
             items = db.execute(
                 'SELECT * FROM item WHERE order_id = ?', (order['id'],)
             ).fetchall()
+            
+            merge_cols = [0, 1, 2, 8, 9, 10, 11, 12, 13, 14, 15]
+            for c in merge_cols:
+                csheet.merge_range(row, c, row + len(items) - 1, c, "")
+
             for item in items:
                 col = 0
                 csheet.write_datetime(row, col, order['created'], fdt); col += 1
@@ -177,8 +181,8 @@ def xlsx_gen(csv_proj):
                 csheet.write_string(row, col, status_enum[order['status']]); col += 1
                 csheet.write_url(row, col, 'None' if not  order['track_url'] else order['track_url']); col += 1
                 csheet.write_string(row, col, 'None' if not order['courier'] else courier_enum[order['courier']]); col += 1
-                row += 1 
-    
+                row += 1
+
     xfile.close()
 
     return fname

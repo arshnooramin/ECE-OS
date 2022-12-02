@@ -114,11 +114,8 @@
     </div>
     {% if current_user.is_admin() and current_user.is_superuser() %}
     <div class="row" style="max-width: 30rem;">
-        <div class="py-1 col-md-6 mt-1">
-            <button class="w-100 mr-4 btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#admin-modal">Manage Admins</button>
-        </div>
-        <div class="py-1 col-md-6 mt-1">
-            <button class="w-100 mr-4 btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#email-modal" disabled>Email Settings</button>
+        <div class="py-1 col-md-12 mt-1">
+            <button class="w-100 mr-4 btn btn-secondary" data-bs-toggle="modal" data-bs-target="#admin-modal">Manage Admins <span class="badge text-bg-dark">super</span></button>
         </div>
     </div>
     {% endif %}
