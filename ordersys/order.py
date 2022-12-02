@@ -5,6 +5,7 @@ from ordersys.db import get_db
 from flask_login import login_required, current_user
 from ordersys.enums import *
 from ordersys.project import update_cost as project_update_cost
+from ordersys.user import User
 
 bp = Blueprint('order', __name__, url_prefix='/order')
 
@@ -77,6 +78,9 @@ def edit_order(order_id):
     order = db.execute(
         "SELECT * FROM eorder WHERE id = ?", (order_id,)
     ).fetchone()
+    user = db.execute(
+        "SELECT user_id FROM project WHERE id = ?", (order["project_id"],)
+    ).fetchone()
 
     if request.method == 'POST':
         track_url = request.form['order-track-url']
@@ -97,6 +101,9 @@ def edit_order(order_id):
 
         project_update_cost(order['project_id'], -1*order['shipping_costs'])
         project_update_cost(order['project_id'], request.form['order-shipping-costs'])
+
+        if status_enum[order['status']] != "Delivered" and status_enum[int(request.form['order-status'])] == "Delivered":
+            send_status_email(order_id, order['vendor'], url_for('project.index'), User.get(user['user_id']))
 
         flash('Order successfully modified.', 'success')
         return redirect(session['prev_project'])

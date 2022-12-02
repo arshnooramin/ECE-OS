@@ -9,12 +9,26 @@ SUPER_USER = os.environ.get("SUPER_USER_EMAIL")
 BASE_URL = os.environ.get("BASE_URL")
 
 def send_order_email(order_id, vendor, order_url, creator):
-    subject = f"[{TAG}] New Order Received"
+    subject = f"[{TAG}] New Order ({order_id}) Received"
     receiver = SUPER_USER
     message = f"""\
 Dear Admin,
 
 A new order (Order {order_id} for Vendor {vendor}) was created by {creator.name} ({creator.email}).
+
+The order can be viewed at following URL: {BASE_URL + order_url}
+
+ECE Ordering System
+"""
+    send_email(subject, receiver, message)
+
+def send_status_email(order_id, vendor, order_url, creator):
+    subject = f"[{TAG}] Order ({order_id}) Delivered"
+    receiver = creator.email
+    message = f"""\
+Dear {creator.name},
+
+Your order (Order {order_id} for Vendor {vendor}) was marked as delivered by Matt Lamparter.
 
 The order can be viewed at following URL: {BASE_URL + order_url}
 
