@@ -136,17 +136,55 @@
                     <button class="mb-2 btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">PM: {{ get_username(project["user_email"]) }}</button>
                     <ul class="dropdown-menu">
                         <li><h6 class="dropdown-header">{{ project["user_name"] }}</h6></li>
-                        <li><a class="dropdown-item" href="{{ url_for('admin.delete_user', user_id = project['user_id']) }}">Delete</a></li>
-                    </ul>
+                        <!-- <li><a class="dropdown-item" href="{{ url_for('admin.delete_user', user_id = project['user_id']) }}">Delete</a></li> -->
+                        <li><button data-bs-toggle="modal" data-bs-target="#del-user-modal-{{project['project_id']}}" class="dropdown-item">Delete</button></li>
+                    </ul>  
                 {% endif %}
             </div>
             <div class="col-sm-4">
                 <a class="w-100 btn btn-primary" href="{{ url_for('project.index_admin', project_id = project['project_id']) }}">View</a>
-                <a class="w-100 mt-2 btn btn-danger" href="{{ url_for('project.delete_project', project_id = project['project_id']) }}">Delete</a>
+                <!-- <a class="w-100 mt-2 btn btn-danger" href="{{ url_for('project.delete_project', project_id = project['project_id']) }}">Delete</a> -->
+                <button data-bs-toggle="modal" data-bs-target="#del-project-modal-{{project['project_id']}}" class="w-100 mt-2 btn btn-danger">Delete</a>
             </div>
         </div>
     </div>
 </div>
+<div class="modal fade" id="del-project-modal-{{project['project_id']}}" tabindex="-1" aria-labelledby="del-project-modal-lbl" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="del-project-modal-lbl">Deleting Project</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete project <span class="fw-semibold badge text-bg-light">{{project["project_name"]}}</span>?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a class="btn btn-danger" href="{{ url_for('project.delete_project', project_id = project['project_id']) }}">Delete</a>
+        </div>
+      </div>
+    </div>
+</div>
+{% if project["user_email"] != None %}
+<div class="modal fade" id="del-user-modal-{{project['project_id']}}" tabindex="-1" aria-labelledby="del-user-modal-lbl" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="del-user-modal-lbl">Deleting PM</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete project manager <span class="fw-semibold badge text-bg-light">{{project["user_name"]}}</span>?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a class="btn btn-danger" href="{{ url_for('admin.delete_user', user_id = project['user_id']) }}">Delete</a>
+        </div>
+      </div>
+    </div>
+</div>
+{% endif %}
 {% endfor %}
 
 <div class="modal fade" id="project-modal" tabindex="-1" aria-labelledby="project-modal-label" aria-hidden="true">

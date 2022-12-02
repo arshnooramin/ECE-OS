@@ -83,14 +83,31 @@
                 <a class="w-100 mt-2 btn btn-info" target="_blank" href="//{{ order['track_url'] }}">Track</a>
                 {% endif %}
                 {% if order["status"] == 0 %}
-                <a class="w-100 mt-2 btn btn-danger"
-                    href="{{ url_for('order.delete_order', order_id = order['id']) }}">Delete</a>
+                <button class="w-100 mt-2 btn btn-danger"
+                data-bs-toggle="modal" data-bs-target="#del-order-modal-{{order['id']}}">Delete</button>
                 {% endif %}
             </div>
         </div>
     </div>
     <div class="card-footer text-muted">
         Added {{ order["created"] }}
+    </div>
+</div>
+<div class="modal fade" id="del-order-modal-{{order['id']}}" tabindex="-1" aria-labelledby="del-order-modal-lbl" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="del-order-modal-lbl">Deleting Order</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to delete order <span class="fw-semibold badge text-bg-light">{{order["vendor"]}} ({{order["id"]}})</span>?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a class="btn btn-danger" href="{{ url_for('order.delete_order', order_id = order['id']) }}">Delete</a>
+        </div>
+      </div>
     </div>
 </div>
 {% endfor %}
