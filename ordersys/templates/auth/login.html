@@ -8,9 +8,15 @@
     <input class="form-control" name="email" id="email">
   </div>
   <div class="col-md-10 mb-3">
+    {%if config['DEBUG']%}
     <button type="submit" name="login-type" value="dev" class="mt-0 btn btn-primary">
       Login <span class="badge text-bg-dark">dev</span>
     </button>
+    {%else%}
+    <button disabled type="submit" name="login-type" value="dev" class="mt-0 btn btn-primary">
+      Login <span class="badge text-bg-dark">dev</span>
+    </button>
+    {%endif%}
   </div>
   <hr>
   <div class="col-md-10">

@@ -69,7 +69,8 @@
             <div class="col-sm-8">
                 <h5 class="card-title">Order {{ order["id"] }}: {{ order["vendor"] }}
                     <a href="//{{ order['vendor_url'] }}" target="_blank"><span class="material-symbols-outlined">public</span></a></h5>
-                <p>Cost: {{ "$%.2f" | format(order["item_costs"]) }} + {{ "$%.2f" | format(order["shipping_costs"]) }} (shipping)</p>
+                <p class="fw-semibold" style="margin-bottom: 0.2rem !important;">Total Cost: {{ "$%.2f" | format(order["item_costs"] + order["shipping_costs"]) }}</p>
+                <p style="font-size: 0.8rem !important;">{{ "$%.2f" | format(order["item_costs"]) }} + {{ "$%.2f" | format(order["shipping_costs"]) }} (shipping)</p>
                 <span class="badge rounded-pill text-bg-secondary">Status: {{ status_enum[order["status"]] }}</span>
             </div>
             <div class="col-sm-4">

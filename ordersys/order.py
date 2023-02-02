@@ -102,8 +102,8 @@ def edit_order(order_id):
         project_update_cost(order['project_id'], -1*order['shipping_costs'])
         project_update_cost(order['project_id'], request.form['order-shipping-costs'])
 
-        if status_enum[order['status']] != "Delivered" and status_enum[int(request.form['order-status'])] == "Delivered":
-            send_status_email(order_id, order['vendor'], url_for('project.index'), User.get(user['user_id']))
+        if status_enum[order['status']] != status_enum[int(request.form['order-status'])]:
+            send_status_email(order_id, order['vendor'], status_enum[int(request.form['order-status'])], url_for('project.index'), User.get(user['user_id']))
 
         flash('Order successfully modified.', 'success')
         return redirect(session['prev_project'])
