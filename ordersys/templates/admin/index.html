@@ -73,6 +73,24 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="reset-modal" tabindex="-1" aria-labelledby="reset-modal-lbl" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="reset-modal-lbl">Resetting Database</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Are you sure you want to reset the database? This action <b>cannot</b> be undone. This will <b>permanently delete</b> all the orders, projects, admins (except the superuser), and project managers.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <a class="btn btn-danger" href="{{ url_for('admin.reset_db') }}">I understand, reset the database</a>
+        </div>
+      </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block content %}
@@ -114,8 +132,11 @@
     </div>
     {% if current_user.is_admin() and current_user.is_superuser() %}
     <div class="row" style="max-width: 30rem;">
-        <div class="py-1 col-md-12 mt-1">
+        <div class="py-1 col-md-6 mt-1">
             <button class="w-100 mr-4 btn btn-secondary" data-bs-toggle="modal" data-bs-target="#admin-modal">Manage Admins <span class="badge text-bg-dark">super</span></button>
+        </div>
+        <div class="py-1 col-md-6 mt-1">
+            <button class="w-100 mr-4 btn btn-danger" data-bs-toggle="modal" data-bs-target="#reset-modal">Reset DB <span class="badge text-bg-dark">super</span></button>
         </div>
     </div>
     {% endif %}

@@ -5,7 +5,7 @@ from string import ascii_uppercase
 from datetime import datetime
 from ordersys.enums import *
 import xlsxwriter
-from ordersys.db import get_db
+from ordersys.db import get_db, init_db, populate_db
 from flask_login import login_required
 from ordersys.auth import admin_required
 
@@ -113,6 +113,25 @@ def delete_user(user_id):
     flash('User successfully deleted.', 'success')
 
     return redirect(url_for('admin.index'))
+
+@bp.route('/reset_db')
+@login_required
+@admin_required
+def reset_db():
+    db = get_db()
+    
+    db.execute('DROP TABLE eorder')
+    db.execute('DROP TABLE item')
+    db.execute('DROP TABLE project')
+    db.execute('DROP TABLE user')
+
+    init_db()
+    populate_db()
+    
+    db.commit()
+    flash('Database successfully resetted.', 'success')
+
+    return redirect(url_for('auth.logout'))
 
 def xlsx_gen(csv_proj):
     db = get_db()

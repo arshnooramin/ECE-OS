@@ -15,6 +15,24 @@ def init_db():
     with current_app.open_resource('schema.sql') as f:
         db.executescript(f.read().decode('utf8'))
 
+def populate_db():
+    db = get_db()
+    # project_data = [
+    #     ("Northrop Grumman",0,),
+    #     ("Keurig", 0,),
+    # ]
+    # db.executemany(
+    #     'INSERT INTO project (name, total) VALUES (?, ?)', project_data
+    # )
+    user_data = [
+        (0, "mlampart@bucknell.edu", "Matt Lamparter", 0,),
+        # (1, "ana002@bucknell.edu", "Arsh Noor Amin", 1,),
+    ]
+    db.executemany(
+        'INSERT INTO user (project_id, email, name, auth_level) VALUES (?, ?, ?, ?);', user_data
+    )
+    db.commit()
+    click.echo('DB populated.')
 
 @click.command('init-db')
 def init_db_command():
@@ -37,25 +55,9 @@ def add_admins_command():
     db.commit()
     click.echo('Admins added.')
 
-
 @click.command('populate-db')
 def populate_db_command():
-    db = get_db()
-    # project_data = [
-    #     ("Northrop Grumman",0,),
-    #     ("Keurig", 0,),
-    # ]
-    # db.executemany(
-    #     'INSERT INTO project (name, total) VALUES (?, ?)', project_data
-    # )
-    user_data = [
-        (0, "mlampart@bucknell.edu", "Matt Lamparter", 0,),
-        # (1, "ana002@bucknell.edu", "Arsh Noor Amin", 1,),
-    ]
-    db.executemany(
-        'INSERT INTO user (project_id, email, name, auth_level) VALUES (?, ?, ?, ?);', user_data
-    )
-    db.commit()
+    populate_db()
     click.echo('DB populated.')
 
 
