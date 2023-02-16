@@ -40,6 +40,7 @@ courier_enum = {
     1: "FedEx",
     2: "UPS",
     3: "DHL",
+    5: "Amazon",
     4: "Other"
 }
 
