@@ -38,8 +38,8 @@ ECE Ordering System
 
 def send_email(subject, receiver, message):
     sender = os.environ.get('SENDER_EMAIL')
-    password = os.environ.get('SENDER_PASSWORD')
-    context = ssl.create_default_context()
+    # password = os.environ.get('SENDER_PASSWORD')
+    # context = ssl.create_default_context()
     
     email = EmailMessage()
     email["Subject"] = subject
@@ -47,6 +47,9 @@ def send_email(subject, receiver, message):
     email["To"] = receiver
     email.set_content(message)
 
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
-        server.login(sender, password)
+    # with smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context) as server:
+    #     server.login(sender, password)
+    #     server.send_message(email)
+
+    with smtplib.SMTP('smtp.bucknell.edu', 25) as server:
         server.send_message(email)
