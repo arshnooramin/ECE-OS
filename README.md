@@ -33,6 +33,11 @@ In addition to student and admin view there is a super user view, there is only 
 Clone this git repository and create a Python virtual environment. Then use the  `requirements.txt` file to install all the dependencies.
 
 In order to further develop, test, or debug the app, a debug server can be run by using the following command:
-```flask --app ordersys --debug run```
+```
+flask --app ordersys --debug run
+```
+
+## Database
+The database uses the following relations.
 
 
