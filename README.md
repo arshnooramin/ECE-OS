@@ -4,6 +4,7 @@ The ECE-OS is an ordering System for Engineering Capstone Projects at Bucknell. 
 - Python library Flask
 - HTML/CSS and JavaScript
 - SQLite Database
+- Bootstrap toolkit
 
 ## Features
 
@@ -38,6 +39,15 @@ flask --app ordersys --debug run
 ```
 
 ## Database
-The database uses the following relations.
+The database uses the following relations:
+- The user table has a one-to-many relationship with the project table. A user can have multiple projects, but a project can only belong to one user.
+- The project table has a one-to-many relationship with the order table. A project can have multiple orders, but an order can only belong to one project.
+- The order table has a one-to-many relationship with the item table. An order can have multiple items, but an item can only belong to one order.
+
+## Application
+The application inludes templates, static files, and Python scripts.
+- The templates include Jinja HTML files. Threre is a template for each view/route coupled with Python scripts
+- The static files includes JavaScript for some basic frontend interaction and events
+- The Python scripts get information as entered by the user and update the HTML with appropriate information for the user. The scripts also update the SQLite database with information provided by the user
 
 
