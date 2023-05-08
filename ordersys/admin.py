@@ -163,7 +163,7 @@ def xlsx_gen(csv_proj):
     for project in csv_proj:
         row = 1
         
-        csheet = xfile.add_worksheet(project['project_name'])
+        csheet = xfile.add_worksheet(project['project_name'][:31])
         
         csheet.set_column(0, 15, 20)
 
